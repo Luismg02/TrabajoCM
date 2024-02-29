@@ -1,5 +1,7 @@
+// Definición del nombre del paquete
 package com.example.trabajocm;
 
+//
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -23,8 +25,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.trabajocm.databinding.ActivityMainBinding;
-
-
 
 
 public class MainActivity extends AppCompatActivity {
