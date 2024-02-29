@@ -20,6 +20,12 @@
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.trabajocm.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="Editar Metadatos"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_borrado"
+        android:name="com.example.trabajocm.ui.borrado.BorradoFragment"
+        android:label="Borrado Metadatos"
+        tools:layout="@layout/fragment_borrado" />
 </navigation>
