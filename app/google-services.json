@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "245213946637",
+    "project_id": "trabajocm-823f0",
+    "storage_bucket": "trabajocm-823f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245213946637:android:e8aa1a8d15747279f5c644",
+        "android_client_info": {
+          "package_name": "com.example.trabajocm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD90lMtSwoYIGEBuenuf_yFJRHurgKvDmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
