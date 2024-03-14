@@ -10,4 +10,5 @@
     <string name="menu_home">Inicio</string>
     <string name="menu_gallery">Analizar</string>
     <string name="menu_slideshow">Editar Metadatos</string>
+    <string name="default_web_client_id">trabajocm-823f0</string>
 </resources>
