@@ -19,7 +19,7 @@
         android:theme="@style/Theme.TrabajoCM"
         tools:targetApi="31">
         <activity
-            android:name=".loginactivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.TrabajoCM.NoActionBar">
@@ -27,11 +27,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
         </activity>
 
     </application>

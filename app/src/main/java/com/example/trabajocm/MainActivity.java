@@ -4,6 +4,7 @@ package com.example.trabajocm;
 //
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 //Imports para cargar archivos
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private FloatingActionButton fab;
 
+    private boolean isFabPressed = false; // Bandera para indicar si se presionó el botón flotante
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_borrado)
                 .setOpenableLayout(drawer)
@@ -63,9 +64,13 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Establecer la bandera como verdadera cuando se presiona el botón flotante
+                isFabPressed = true;
+                Log.d("MainActivity", "Floating action button pressed. isFabPressed = " + isFabPressed);
                 openFileChooser();
             }
         });
+
     }
 
     @Override
@@ -87,27 +92,34 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST,null);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST) {
-            if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-                // Mostrar la imagen seleccionada en el ImageView
-                Uri selectedImageUri = data.getData();
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null && isFabPressed) {
+            // Mostrar la imagen seleccionada en el ImageView
+            Uri selectedImageUri = data.getData();
 
-                GalleryFragment fragment = new GalleryFragment();
-                Bundle args = new Bundle();
-                args.putString("imageUri", selectedImageUri.toString());
-                fragment.setArguments(args);
+            // Crear un Bundle para pasar la URI de la imagen al fragmento
+            Bundle args = new Bundle();
+            args.putString("imageUri", selectedImageUri.toString());
 
-                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-                navController.navigate(R.id.nav_gallery, args);
-            }
+            // Obtener el NavController
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+            // Navegar al fragmento GalleryFragment solo si el botón flotante fue presionado
+            navController.navigate(R.id.nav_gallery, args);
+
+            // Restablecer la bandera isFabPressed a false
+            isFabPressed = false;
+            Log.d("MainActivity", "Navigating to gallery. isFabPressed = " + isFabPressed);
         }
     }
+
+
 
 }

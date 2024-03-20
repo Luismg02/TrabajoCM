@@ -61,10 +61,10 @@ public class loginactivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In fallido
-                Log.d("CM", e.toString());
-                Log.d("CM", e.getLocalizedMessage());
-                Log.d("CM", e.getMessage());
-                Status esta= e.getStatus();
+                //Log.d("CM", e.toString());
+                //Log.d("CM", e.getLocalizedMessage());
+                //Log.d("CM", e.getMessage());
+                //Status esta= e.getStatus();
 
 
                 Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
