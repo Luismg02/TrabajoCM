@@ -100,9 +100,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Dentro del método onActivityResult
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null && isFabPressed) {
             // Mostrar la imagen seleccionada en el ImageView
             Uri selectedImageUri = data.getData();
+
+            // Configurar la imagen seleccionada en el ImageView
+            ImageView imageView = findViewById(R.id.imageView);
+            //imageView.setImageURI(selectedImageUri);
 
             // Crear un Bundle para pasar la URI de la imagen al fragmento
             Bundle args = new Bundle();
@@ -118,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
             isFabPressed = false;
             Log.d("MainActivity", "Navigating to gallery. isFabPressed = " + isFabPressed);
         }
+
+
     }
-
-
 
 }

@@ -7,11 +7,24 @@
     tools:context=".ui.gallery.GalleryFragment">
 
     <ImageView
-        android:id="@+id/imageViewGallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/imagenCargadoUsuario"
+        android:layout_width="180dp"
+        android:layout_height="118dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintBottom_toTopOf="@id/metadataTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/metadataTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/imagenCargadoUsuario"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="400dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Metadatos se muestran a continuación" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

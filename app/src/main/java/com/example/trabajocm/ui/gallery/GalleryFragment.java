@@ -1,5 +1,6 @@
 package com.example.trabajocm.ui.gallery;
 
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,48 +10,66 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.trabajocm.R;
-import com.example.trabajocm.databinding.FragmentGalleryBinding;
+
+import java.io.File;
+import java.io.IOException;
 
 public class GalleryFragment extends Fragment {
+
     private ImageView imageView;
-    private Uri imageUri;
-    private FragmentGalleryBinding binding;
+    private TextView metadataTextView;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
-
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        imageView = root.findViewById(R.id.imageViewGallery);
-        Bundle arguments = getArguments();
-        if(arguments != null){
-            String imageUriString = arguments.getString("imageUri");
-            if (imageUriString != null) {
-                imageUri = Uri.parse(imageUriString);
-                if (imageUri != null) {
-                    // Cargar la imagen en el ImageView
-                    imageView.setImageURI(imageUri);
-                }
-            }
-        }
-
-        //final TextView textView = binding.textGallery;
-        //galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+    public GalleryFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+
+        imageView = view.findViewById(R.id.imagenCargadoUsuario); // Cambio aquí
+        metadataTextView = view.findViewById(R.id.metadataTextView);
+
+        // Obtener la URI de la imagen de los argumentos
+        String imageUriString = getArguments().getString("imageUri");
+        Uri myUri = Uri.parse(imageUriString);
+        loadAndDisplayMetadata(myUri, imageUriString);
+
+        return view;
+    }
+
+    private void loadAndDisplayMetadata(Uri imageUri, String tmp) {
+        try {
+            // Cargar imagen en el ImageView
+            imageView.setImageURI(imageUri);
+
+            // Create ExifInterface instance to access image metadata
+            File file = new File(imageUri.getPath());//create path from uri
+            ExifInterface exifInterface = null;
+
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                exifInterface = new ExifInterface(file);
+            }
+            // Read metadata properties
+            String metadata = "Image Metadata:\n\n";
+            metadata += "Date/Time: " + exifInterface.getAttribute(ExifInterface.TAG_DATETIME) + "\n";
+            metadata += "Image Width: " + exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) + "\n";
+            metadata += "Image Height: " + exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) + "\n";
+            // Add more metadata properties as needed
+
+            // Mostrar metadatos en TextView
+            metadataTextView.setText(metadata);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
