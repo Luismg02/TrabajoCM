@@ -10,9 +10,10 @@
         android:id="@+id/imagenCargadoUsuario"
         android:layout_width="180dp"
         android:layout_height="118dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toTopOf="@id/metadataTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,11 +21,11 @@
         android:id="@+id/metadataTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/imagenCargadoUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="400dp"
         android:layout_gravity="center_horizontal"
-        android:text="Metadatos se muestran a continuación" />
+        android:layout_marginTop="20dp"
+        android:text="Metadatos se muestran a continuación"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imagenCargadoUsuario" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

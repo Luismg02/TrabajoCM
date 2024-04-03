@@ -1,5 +1,6 @@
 package com.example.trabajocm.ui.gallery;
 
+import android.content.ContentResolver;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,12 @@ import com.example.trabajocm.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 
 public class GalleryFragment extends Fragment {
 
@@ -49,25 +56,38 @@ public class GalleryFragment extends Fragment {
             // Cargar imagen en el ImageView
             imageView.setImageURI(imageUri);
 
-            // Create ExifInterface instance to access image metadata
-            File file = new File(imageUri.getPath());//create path from uri
-            ExifInterface exifInterface = null;
+            // Obtener el ContentResolver para acceder a los datos del proveedor de contenido
+            ContentResolver contentResolver = requireActivity().getContentResolver();
+
+            // Leer metadatos de la imagen utilizando el ContentResolver
+            InputStream inputStream = contentResolver.openInputStream(imageUri);
+            if (inputStream != null) {
+                ExifInterface exifInterface;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    exifInterface = new ExifInterface(inputStream);
+                } else {
+                    exifInterface = new ExifInterface(imageUri.getPath());
+                }
+                inputStream.close();
+
+                // Leer metadata properties
+                String metadata = "METADATOS::\n\n";
+                metadata += "Fecha/Hora: " + exifInterface.getAttribute(ExifInterface.TAG_DATETIME) + "\n";
+                metadata += "Ancho De La Imagen: " + exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) + "\n";
+                metadata += "Alto De La Imagen: " + exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) + "\n";
+                // Más metadatos
+                metadata += "Modelo de la Cámara: " + exifInterface.getAttribute(ExifInterface.TAG_MODEL) + "\n";
+                metadata += "Fabricante: " + exifInterface.getAttribute(ExifInterface.TAG_MAKE) + "\n";
+                metadata += "Orientación: " + exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION) + "\n";
+                metadata += "GPS ALTITUD: " + exifInterface.getAttribute(ExifInterface.TAG_GPS_ALTITUDE) + "\n";
+                metadata += "GPS LONGITUD: " + exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE) + "\n";
+                metadata += "ISO: " + exifInterface.getAttribute(ExifInterface.TAG_ISO_SPEED_RATINGS) + "\n";
 
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                exifInterface = new ExifInterface(file);
+
+                // Mostrar metadatos en TextView
+                metadataTextView.setText(metadata);
             }
-            // Read metadata properties
-            String metadata = "Image Metadata:\n\n";
-            metadata += "Date/Time: " + exifInterface.getAttribute(ExifInterface.TAG_DATETIME) + "\n";
-            metadata += "Image Width: " + exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH) + "\n";
-            metadata += "Image Height: " + exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH) + "\n";
-            // Add more metadata properties as needed
-
-            // Mostrar metadatos en TextView
-            metadataTextView.setText(metadata);
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
