@@ -51,6 +51,6 @@ dependencies {
 
     implementation("io.coil-kt:coil:2.4.0")
     implementation("com.drewnoakes:metadata-extractor:2.18.0")
-    implementation("androidx.exifinterface:exifinterface:1.0.0")
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
 
 }

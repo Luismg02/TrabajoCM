@@ -10,7 +10,7 @@
         android:id="@+id/imagenCargadoUsuario"
         android:layout_width="180dp"
         android:layout_height="118dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="75dp"
         app:layout_constraintBottom_toTopOf="@id/metadataTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
