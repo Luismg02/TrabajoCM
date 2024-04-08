@@ -15,11 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.trabajocm.MainActivity;
 import com.example.trabajocm.R;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
@@ -42,13 +44,27 @@ public class GalleryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
+
         imageView = view.findViewById(R.id.imagenCargadoUsuario); // Cambio aquí
         metadataTextView = view.findViewById(R.id.metadataTextView);
 
+
+        if (getActivity() instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            Uri myUri = mainActivity.selectedImageUri;
+            if(myUri!=null){
+                String imageUriString = myUri.toString();
+                loadAndDisplayMetadata(myUri, imageUriString);
+            }else{
+                imageView.setImageResource(R.drawable.imagen_sin_cargar);
+            }
+
+        }
+
         // Obtener la URI de la imagen de los argumentos
-        String imageUriString = getArguments().getString("imageUri");
-        Uri myUri = Uri.parse(imageUriString);
-        loadAndDisplayMetadata(myUri, imageUriString);
+        //String imageUriString = getArguments().getString("imageUri");
+        //Uri myUri = Uri.parse(imageUriString);
+
 
         return view;
     }
