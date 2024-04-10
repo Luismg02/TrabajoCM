@@ -18,8 +18,8 @@
         app:layout_constraintVertical_bias="0.174" />
 
     <LinearLayout
-        android:layout_width="301dp"
-        android:layout_height="253dp"
+        android:layout_width="298dp"
+        android:layout_height="323dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,6 +62,13 @@
             android:ems="10"
             android:hint="Field4"
             android:inputType="text" />
+
+        <Button
+            android:id="@+id/editar_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Actualizar Metadatos" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
