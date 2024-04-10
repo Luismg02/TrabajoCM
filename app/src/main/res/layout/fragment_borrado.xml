@@ -4,4 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.borrado.BorradoFragment"/>
+    tools:context=".ui.borrado.BorradoFragment">
+
+    <ImageView
+        android:id="@+id/imagen_cargada_borrado"
+        android:layout_width="224dp"
+        android:layout_height="262dp"
+        android:src="@drawable/imagen_sin_cargar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.147" />
+
+    <Button
+        android:id="@+id/borrado_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Borrar Metadatos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagen_cargada_borrado"
+        app:layout_constraintVertical_bias="0.201" />
+</androidx.constraintlayout.widget.ConstraintLayout>
