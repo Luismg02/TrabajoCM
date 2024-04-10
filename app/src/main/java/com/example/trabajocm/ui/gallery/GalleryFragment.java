@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +16,31 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.trabajocm.MainActivity;
-import com.example.trabajocm.R;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.example.trabajocm.MainActivity;
+import com.example.trabajocm.R;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.ImagingException;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
+import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
+import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
+import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
 
 
 public class GalleryFragment extends Fragment {
@@ -103,24 +119,35 @@ public class GalleryFragment extends Fragment {
 
     private void loadAndDisplayMetadata(Uri imageUri) {
         try {
+            // Obtener el ContentResolver para acceder a los datos del proveedor de contenido
+            ContentResolver contentResolver3 = requireActivity().getContentResolver();
+            // Leer metadatos de la imagen utilizando metadata-extractor
+            InputStream inputStream3 = contentResolver3.openInputStream(imageUri);
+            List<org.apache.commons.imaging.formats.tiff.TiffField> listaAux = new ArrayList<>();
+            List<List<String>> lista = new ArrayList<>();
+            final ImageMetadata metadata1 = Imaging.getMetadata(inputStream3, imageUri.getPath());
+            if (metadata1 instanceof JpegImageMetadata) {
+                final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata1;
+                final TiffImageMetadata exifMetadata = jpegMetadata.getExif();
+                if (null != exifMetadata) {
+                    listaAux = exifMetadata.getAllFields();
+                }
+            }
+            for (org.apache.commons.imaging.formats.tiff.TiffField tag: listaAux){
+                ArrayList<String> item= new ArrayList<>();
+                item.add(tag.getTagName());
+                item.add(tag.getValueDescription());
+                lista.add(item);
+            }
+            inputStream3.close();
 
             // Obtener el ContentResolver para acceder a los datos del proveedor de contenido
             ContentResolver contentResolver = requireActivity().getContentResolver();
             // Leer metadatos de la imagen utilizando metadata-extractor
             InputStream inputStream = contentResolver.openInputStream(imageUri);
-            // Cargar los metadatos del ImageMetadataReader por si acaso
-            List<List<String>> lista = new ArrayList<>();
 
             if (inputStream != null) {
                 Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
-                for (Directory directory : metadata.getDirectories()) {
-                    for (Tag tag : directory.getTags()) {
-                        ArrayList<String> item= new ArrayList<>();
-                        item.add(tag.getTagName());
-                        item.add(tag.getDescription());
-                        lista.add(item);
-                    }
-                }
 
                 // Mostrar el botón si los valores de latitud y longitud GPS están disponibles
                 if (checkGPSAvailability(metadata)) {
@@ -147,19 +174,19 @@ public class GalleryFragment extends Fragment {
 
                 for(List<String> tag : lista){
                     switch(tag.get(0).toString()){
-                        case "Date/Time":
+                        case "DateTime":
                             if(!exif.hasAttribute(ExifInterface.TAG_DATETIME)){
                                 exif.setAttribute(ExifInterface.TAG_DATETIME, tag.get(1).toString());
                             }
                             fecha.setText("Fecha: " + exif.getAttribute(ExifInterface.TAG_DATETIME));
                             break;
-                        case "GPS Latitude":
+                        case "GPSLatitude":
                             if(!exif.hasAttribute(ExifInterface.TAG_GPS_LATITUDE)){
                                 exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, tag.get(1).toString());
                             }
                             latitude.setText("Latitud: " +  exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
                             break;
-                        case "GPS Longitude":
+                        case "GPSLongitude":
                             if(!exif.hasAttribute(ExifInterface.TAG_GPS_LONGITUDE)){
                                 exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, tag.get(1).toString());
                             }
@@ -177,13 +204,13 @@ public class GalleryFragment extends Fragment {
                             }
                             make.setText("Fabricante: " +  exif.getAttribute(ExifInterface.TAG_MAKE));
                             break;
-                        case "Image Width":
+                        case "ImageWidth":
                             if(!exif.hasAttribute(ExifInterface.TAG_IMAGE_WIDTH)){
                                 exif.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, tag.get(1).toString());
                             }
                             width.setText("Ancho: " +  exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
                             break;
-                        case "Image Height":
+                        case "ImageLength":
                             if(!exif.hasAttribute(ExifInterface.TAG_IMAGE_LENGTH)){
                                 exif.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, tag.get(1).toString());
                             }
