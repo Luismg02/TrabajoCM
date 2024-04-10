@@ -11,4 +11,14 @@
     <string name="menu_gallery">Analizar</string>
     <string name="menu_slideshow">Editar Metadatos</string>
     <string name="default_web_client_id">trabajocm-823f0</string>
+    <string name="principal_content">Los metadatos son datos que describen otros datos.
+        Son fundamentales para organizar, buscar y comprender la información digital.
+        Son importantes porque:\n\n
+        1. Facilitan la clasificación y búsqueda de datos al proporcionar información detallada
+        sobre su contenido y contexto.\n\n
+        2. Estándares comunes permiten la integración y el intercambio de datos
+        entre diferentes sistemas y plataformas.\n\n
+        3. Mejoran la capacidad de encontrar datos relevantes de manera rápida y eficiente.\n\n
+        4. Son esenciales para la gestión y preservación a largo plazo
+        de los datos digitales al proporcionar información sobre su autenticidad e integridad.\n\n</string>
 </resources>

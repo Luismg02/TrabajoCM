@@ -1,6 +1,7 @@
 package com.example.trabajocm.ui.slideshow;
 
 import android.content.ContentResolver;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +35,16 @@ public class SlideshowFragment extends Fragment {
     private ImageView imageView;
     private FragmentSlideshowBinding binding;
 
+    private EditText fecha;
+    private EditText latitude;
+    private EditText longitud;
+    private EditText model;
+    private EditText make;
+    private EditText width;
+    private EditText height;
     private Button btn;
+
+    private LinearLayout data_display;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,8 +55,14 @@ public class SlideshowFragment extends Fragment {
         View root = binding.getRoot();
 
         imageView = root.findViewById(R.id.imagen_cargada_edit);
-
-
+        fecha = root.findViewById(R.id.edit_date);
+        latitude = root.findViewById(R.id.edit_latitud);
+        longitud = root.findViewById(R.id.edit_longitud);
+        model = root.findViewById(R.id.edit_model);
+        make = root.findViewById(R.id.edit_make);
+        width = root.findViewById(R.id.edit_width);
+        height = root.findViewById(R.id.edit_height);
+        data_display = root.findViewById(R.id.data_display_edit);
         btn = root.findViewById(R.id.editar_btn);
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -65,18 +83,15 @@ public class SlideshowFragment extends Fragment {
 
         if (getActivity() instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) getActivity();
-            Uri myUri = mainActivity.selectedImageUri;
-            if(myUri!=null){
-                String imageUriString = myUri.toString();
-                displayImage(myUri, imageUriString);
+            Uri imageUri = mainActivity.selectedImageUri;
+            if(imageUri!=null){
+                imageView.setImageURI(imageUri);
+                displayMetadata(imageUri);
             }else{
                 imageView.setImageResource(R.drawable.imagen_sin_cargar);
             }
 
         }
-
-        //final TextView textView = binding.textSlideshow;
-        //slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -86,35 +101,31 @@ public class SlideshowFragment extends Fragment {
         binding = null;
     }
 
-    private void displayImage(Uri imageUri, String tmp) {
+    private void displayMetadata(Uri imageUri) {
         try {
-            // Cargar imagen en el ImageView
-            imageView.setImageURI(imageUri);
             // Obtener el ContentResolver para acceder a los datos del proveedor de contenido
-            //ContentResolver contentResolver = requireActivity().getContentResolver();
+            ContentResolver contentResolver = requireActivity().getContentResolver();
 
-            // Leer metadatos de la imagen utilizando metadata-extractor
-            //InputStream inputStream = contentResolver.openInputStream(imageUri);
-            //if (inputStream != null) {
-                //Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
+            // Leer metadatos de la imagen utilizando exifInterface
+            InputStream inputStream2 = contentResolver.openInputStream(imageUri);
 
-                // Construir una cadena con los metadatos
-                //StringBuilder metadataString = new StringBuilder("METADATOS::\n\n");
+            if(inputStream2 != null){
 
-                //for (Directory directory : metadata.getDirectories()) {
-                    //for (Tag tag : directory.getTags()) {
-                        //Log.d("asd", tag.getTagName());
-                        //metadataString.append(tag.getTagName()).append(": ").append(tag.getDescription()).append("\n");
+                ExifInterface exif = null;
 
-                    //}
-                //}
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    exif = new ExifInterface(inputStream2);
+                }
 
+                fecha.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
+                latitude.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
+                longitud.setText(exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+                model.setText(exif.getAttribute(ExifInterface.TAG_MODEL));
+                make.setText(exif.getAttribute(ExifInterface.TAG_MAKE));
+                width.setText( exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
+                height.setText( exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
 
-
-                // Mostrar metadatos en TextView
-                //metadataTextView.setText(metadataString.toString());
-                //inputStream.close();
-            //}
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.trabajocm"
-        minSdk = 24
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -52,6 +52,6 @@ dependencies {
     implementation("io.coil-kt:coil:2.4.0")
     implementation("com.drewnoakes:metadata-extractor:2.18.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
-    implementation("com.mapbox.mapboxsdk:mapbox-android-sdk:10.2.0")
+    implementation("org.apache.commons:commons-imaging:1.0")
 
 }

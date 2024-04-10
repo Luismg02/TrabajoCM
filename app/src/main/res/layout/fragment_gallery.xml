@@ -6,38 +6,104 @@
     android:layout_height="match_parent"
     tools:context=".ui.gallery.GalleryFragment">
 
-    <ImageView
-        android:id="@+id/imagenCargadoUsuario"
-        android:layout_width="180dp"
-        android:layout_height="118dp"
-        android:layout_marginTop="75dp"
-        app:layout_constraintBottom_toTopOf="@id/metadataTextView"
+    <LinearLayout
+        android:layout_width="411dp"
+        android:layout_height="616dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-    <TextView
-        android:id="@+id/metadataTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="Metadatos se muestran a continuación"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imagenCargadoUsuario" />
+        <ImageView
+            android:id="@+id/imagen_cargada_mostrar"
+            android:layout_width="216dp"
+            android:layout_height="203dp"
+            android:layout_marginBottom="10dp" />
 
-    <Button
-        android:id="@+id/miBoton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="352dp"
-        android:text="Localizar Coordenadas"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagenCargadoUsuario" />
+        <TextView
+            android:id="@+id/metadataTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:text="Metadatos se muestran a continuación" />
+
+        <LinearLayout
+            android:id="@+id/data_display"
+            android:layout_width="329dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_fecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="Fecha/Hora"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_latitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="GPS Latitud"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_longitug"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="GPS Longitud"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="Modelo"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_make"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="Fabricante"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_width"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="Ancho"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="Alto"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_coordenadas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="Localizar Coordenadas"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
