@@ -52,5 +52,6 @@ dependencies {
     implementation("io.coil-kt:coil:2.4.0")
     implementation("com.drewnoakes:metadata-extractor:2.18.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
+    implementation("com.mapbox.mapboxsdk:mapbox-android-sdk:10.2.0")
 
 }
