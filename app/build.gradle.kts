@@ -34,6 +34,10 @@ android {
 
 dependencies {
 
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+
+
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -45,6 +49,7 @@ dependencies {
     implementation("androidx.mediarouter:mediarouter:1.6.0")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.android.gms:play-services-auth:18.0.0")
+    implementation("com.google.firebase:firebase-firestore:24.11.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -52,6 +57,8 @@ dependencies {
     implementation("io.coil-kt:coil:2.4.0")
     implementation("com.drewnoakes:metadata-extractor:2.18.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
+    implementation("com.google.firebase:firebase-analytics")
+
     implementation(fileTree("libs") { include("*.jar") })
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 

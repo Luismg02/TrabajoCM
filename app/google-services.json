@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "245213946637",
-    "project_id": "trabajocm-823f0",
-    "storage_bucket": "trabajocm-823f0.appspot.com"
+    "project_number": "1053600284724",
+    "project_id": "fir-cm-2024",
+    "storage_bucket": "fir-cm-2024.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:245213946637:android:e8aa1a8d15747279f5c644",
+        "mobilesdk_app_id": "1:1053600284724:android:64edd233455001f7aaca61",
         "android_client_info": {
           "package_name": "com.example.trabajocm"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD90lMtSwoYIGEBuenuf_yFJRHurgKvDmI"
+          "current_key": "AIzaSyDL3ncJW_PFDe2ko2hRBrPUH46frjdXcrs"
         }
       ],
       "services": {
