@@ -26,7 +26,7 @@
             android:layout_marginTop="16dp"
             android:text="Introducción sobre los metadatos"
             android:textColor="@color/colorOrange"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tvAdditionalText"

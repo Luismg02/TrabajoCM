@@ -11,9 +11,16 @@ import android.view.Menu;
 //Imports para cargar archivos
 import android.app.Activity;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.trabajocm.ui.gallery.GalleryFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 //Imports para cargar archivos
 import android.widget.ImageView;
@@ -140,5 +147,4 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 }

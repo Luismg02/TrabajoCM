@@ -21,4 +21,6 @@
         3. Mejoran la capacidad de encontrar datos relevantes de manera rápida y eficiente.\n\n
         4. Son esenciales para la gestión y preservación a largo plazo
         de los datos digitales al proporcionar información sobre su autenticidad e integridad.\n\n</string>
+    <string name="metadatos_por_mostrar">Cargue una imagen y verá los metadatos a continuación</string>
+    <string name="mostrando_metadatos">Los metadatos son los siguientes</string>
 </resources>

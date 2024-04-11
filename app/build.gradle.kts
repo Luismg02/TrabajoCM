@@ -53,5 +53,6 @@ dependencies {
     implementation("com.drewnoakes:metadata-extractor:2.18.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
     implementation(fileTree("libs") { include("*.jar") })
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
 }

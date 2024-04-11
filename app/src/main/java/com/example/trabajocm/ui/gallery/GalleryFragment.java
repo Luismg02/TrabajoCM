@@ -1,8 +1,11 @@
 package com.example.trabajocm.ui.gallery;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -13,7 +16,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -22,12 +28,23 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.example.trabajocm.MainActivity;
 import com.example.trabajocm.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.ImagingException;
@@ -35,12 +52,15 @@ import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
+import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
+import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
 
 public class GalleryFragment extends Fragment {
@@ -53,10 +73,14 @@ public class GalleryFragment extends Fragment {
     private TextView make;
     private TextView width;
     private TextView height;
-
+    private TextView metadata_explainer;
     private Button btn;
+    private GoogleMap gmap;
+
+    private Button btn2;
 
     private LinearLayout data_display;
+    private LinearLayout map;
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -79,28 +103,81 @@ public class GalleryFragment extends Fragment {
         height = view.findViewById(R.id.text_height);
         btn = view.findViewById(R.id.btn_coordenadas);
         data_display = view.findViewById(R.id.data_display);
+        metadata_explainer = view.findViewById(R.id.metadataTextView);
+        map = view.findViewById(R.id.map);
+        map.setVisibility(View.GONE);
+        btn2 = view.findViewById(R.id.btn_borrar_mapa);
+
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_maps_fragment);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.setVisibility(View.VISIBLE);
+                data_display.setVisibility(View.GONE);
+                metadata_explainer.setVisibility(View.GONE);
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        // When map is loaded
+                        LatLng location = new LatLng(55.6761, 12.5683);
+                        googleMap.addMarker(new MarkerOptions().position(location).title("Posicion"));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,12));
+                        //googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                            //@Override
+                            //public void onMapClick(LatLng latLng) {
+                                // When clicked on map
+
+                                // Initialize marker options
+                                //MarkerOptions markerOptions=new MarkerOptions();
+                                // Set position of marker
+                                //markerOptions.position(latLng);
+                                // Set title of marker
+                                //markerOptions.title(latLng.latitude+" : "+latLng.longitude);
+                                // Remove all marker
+                                //googleMap.clear();
+                                // Animating to zoom the marker
+                                //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+                                // Add marker on map
+                                //googleMap.addMarker(markerOptions);
+                            //}
+                        //});
+                    }
+                });
+            }
+        });
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.setVisibility(View.GONE);
+                data_display.setVisibility(View.VISIBLE);
+                metadata_explainer.setVisibility(View.VISIBLE);
+            }
+        });
 
         // Obtenemos la imagen si se ha cargado
         if (getActivity() instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) getActivity();
             Uri imageUri = mainActivity.selectedImageUri;
-            if(imageUri!=null){
+            if (imageUri != null) {
                 data_display.setVisibility(View.VISIBLE);
                 imageView.setImageURI(imageUri);
+                metadata_explainer.setText(R.string.mostrando_metadatos);
                 loadAndDisplayMetadata(imageUri);
-            }else{
+            } else {
                 data_display.setVisibility(View.GONE);
                 imageView.setImageResource(R.drawable.imagen_sin_cargar);
+                metadata_explainer.setText(R.string.metadatos_por_mostrar);
             }
 
         }
 
-
         return view;
     }
 
-    String getMiEtiqueta(String etiqueta,  Metadata metadata)
-    {
+    String getMiEtiqueta(String etiqueta, Metadata metadata) {
         for (Directory directory : metadata.getDirectories()) {
             for (Tag tag : directory.getTags()) {
                 if (tag.getTagName().equals(etiqueta)) {
@@ -120,29 +197,31 @@ public class GalleryFragment extends Fragment {
     private void loadAndDisplayMetadata(Uri imageUri) {
         try {
             // Obtener el ContentResolver para acceder a los datos del proveedor de contenido
-            ContentResolver contentResolver3 = requireActivity().getContentResolver();
-            // Leer metadatos de la imagen utilizando metadata-extractor
-            InputStream inputStream3 = contentResolver3.openInputStream(imageUri);
-            List<org.apache.commons.imaging.formats.tiff.TiffField> listaAux = new ArrayList<>();
-            List<List<String>> lista = new ArrayList<>();
-            final ImageMetadata metadata1 = Imaging.getMetadata(inputStream3, imageUri.getPath());
-            if (metadata1 instanceof JpegImageMetadata) {
-                final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata1;
-                final TiffImageMetadata exifMetadata = jpegMetadata.getExif();
-                if (null != exifMetadata) {
-                    listaAux = exifMetadata.getAllFields();
-                }
-            }
-            for (org.apache.commons.imaging.formats.tiff.TiffField tag: listaAux){
-                ArrayList<String> item= new ArrayList<>();
-                item.add(tag.getTagName());
-                item.add(tag.getValueDescription());
-                lista.add(item);
-            }
-            inputStream3.close();
-
-            // Obtener el ContentResolver para acceder a los datos del proveedor de contenido
             ContentResolver contentResolver = requireActivity().getContentResolver();
+            // Leer metadatos de la imagen utilizando metadata-extractor
+            InputStream inputStream3 = contentResolver.openInputStream(imageUri);
+            List<List<String>> lista = new ArrayList<>();
+
+            if (inputStream3 != null) {
+                List<org.apache.commons.imaging.formats.tiff.TiffField> listaAux = new ArrayList<>();
+
+                final ImageMetadata metadata = Imaging.getMetadata(inputStream3, imageUri.getPath());
+                if (metadata instanceof JpegImageMetadata) {
+                    final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+                    final TiffImageMetadata exifMetadata = jpegMetadata.getExif();
+                    if (null != exifMetadata) {
+                        listaAux = exifMetadata.getAllFields();
+                    }
+                }
+                for (org.apache.commons.imaging.formats.tiff.TiffField tag : listaAux) {
+                    ArrayList<String> item = new ArrayList<>();
+                    item.add(tag.getTagName());
+                    item.add(tag.getValueDescription());
+                    lista.add(item);
+                }
+                inputStream3.close();
+            }
+
             // Leer metadatos de la imagen utilizando metadata-extractor
             InputStream inputStream = contentResolver.openInputStream(imageUri);
 
@@ -162,59 +241,63 @@ public class GalleryFragment extends Fragment {
             }
 
             // Leer metadatos de la imagen utilizando exifInterface
-            InputStream inputStream2 = contentResolver.openInputStream(imageUri);
+            ParcelFileDescriptor parcel_file = contentResolver.openFileDescriptor(imageUri, "r", null);
+            FileDescriptor file = parcel_file.getFileDescriptor();
 
-            if(inputStream2 != null){
+            if (file != null) {
 
                 ExifInterface exif = null;
 
-                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    exif = new ExifInterface(inputStream2);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        checkExternalStoragePermission();
+                        exif = new ExifInterface(file);
+                    }
                 }
 
-                for(List<String> tag : lista){
-                    switch(tag.get(0).toString()){
+                for (List<String> tag : lista) {
+                    switch (tag.get(0).toString()) {
                         case "DateTime":
-                            if(!exif.hasAttribute(ExifInterface.TAG_DATETIME)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_DATETIME)) {
                                 exif.setAttribute(ExifInterface.TAG_DATETIME, tag.get(1).toString());
                             }
                             fecha.setText("Fecha: " + exif.getAttribute(ExifInterface.TAG_DATETIME));
                             break;
                         case "GPSLatitude":
-                            if(!exif.hasAttribute(ExifInterface.TAG_GPS_LATITUDE)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_GPS_LATITUDE)) {
                                 exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, tag.get(1).toString());
                             }
-                            latitude.setText("Latitud: " +  exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
+                            latitude.setText("Latitud: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
                             break;
                         case "GPSLongitude":
-                            if(!exif.hasAttribute(ExifInterface.TAG_GPS_LONGITUDE)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_GPS_LONGITUDE)) {
                                 exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, tag.get(1).toString());
                             }
-                            longitud.setText("Longitud: " +  exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+                            longitud.setText("Longitud: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
                             break;
                         case "Model":
-                            if(!exif.hasAttribute(ExifInterface.TAG_MODEL)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_MODEL)) {
                                 exif.setAttribute(ExifInterface.TAG_MODEL, tag.get(1).toString());
                             }
-                            model.setText("Modelo: " +  exif.getAttribute(ExifInterface.TAG_MODEL));
+                            model.setText("Modelo: " + exif.getAttribute(ExifInterface.TAG_MODEL));
                             break;
                         case "Make":
-                            if(!exif.hasAttribute(ExifInterface.TAG_MAKE)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_MAKE)) {
                                 exif.setAttribute(ExifInterface.TAG_MAKE, tag.get(1).toString());
                             }
-                            make.setText("Fabricante: " +  exif.getAttribute(ExifInterface.TAG_MAKE));
+                            make.setText("Fabricante: " + exif.getAttribute(ExifInterface.TAG_MAKE));
                             break;
                         case "ImageWidth":
-                            if(!exif.hasAttribute(ExifInterface.TAG_IMAGE_WIDTH)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_IMAGE_WIDTH)) {
                                 exif.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, tag.get(1).toString());
                             }
-                            width.setText("Ancho: " +  exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
+                            width.setText("Ancho: " + exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
                             break;
                         case "ImageLength":
-                            if(!exif.hasAttribute(ExifInterface.TAG_IMAGE_LENGTH)){
+                            if (!exif.hasAttribute(ExifInterface.TAG_IMAGE_LENGTH)) {
                                 exif.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, tag.get(1).toString());
                             }
-                            height.setText("Altura: " +  exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
+                            height.setText("Altura: " + exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
                             break;
                         default:
                             break;
@@ -222,7 +305,6 @@ public class GalleryFragment extends Fragment {
 
                 }
                 exif.saveAttributes();
-                inputStream2.close();
             }
 
         } catch (Exception e) {
@@ -230,6 +312,15 @@ public class GalleryFragment extends Fragment {
         }
     }
 
-
+    private void checkExternalStoragePermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            Log.i("Mensaje", "No se tiene permiso para leer.");
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 225);
+        } else {
+            Log.i("Mensaje", "Se tiene permiso para leer!");
+        }
+    }
 
 }

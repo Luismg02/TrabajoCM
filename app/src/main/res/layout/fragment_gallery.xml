@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp"
-            android:text="Metadatos se muestran a continuación" />
+            android:text="@string/metadatos_por_mostrar" />
 
         <LinearLayout
             android:id="@+id/data_display"
@@ -104,6 +104,27 @@
                 android:visibility="visible" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/google_maps_fragment"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="300dp"
+                android:layout_height="300dp"></fragment>
+
+            <Button
+                android:id="@+id/btn_borrar_mapa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ocultar Mapa" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
