@@ -23,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TrabajoCM"
+
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
@@ -37,7 +38,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAcoYxTNvYFoVMihVPeobOQ_dPuwKeLnQY" ></meta-data>
+            android:value="" ></meta-data>
     </application>
 
 </manifest>

@@ -123,7 +123,7 @@ public class GalleryFragment extends Fragment {
                         // When map is loaded
                         LatLng location = new LatLng(55.6761, 12.5683);
                         googleMap.addMarker(new MarkerOptions().position(location).title("Posicion"));
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,12));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,15));
                         //googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                             //@Override
                             //public void onMapClick(LatLng latLng) {
