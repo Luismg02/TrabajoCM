@@ -1,7 +1,10 @@
 package com.example.trabajocm;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -66,34 +71,51 @@ public class LoginRegisterActivity extends AppCompatActivity {
             }
         });
 
-
         btn_register.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                String emailregUser = emailreg.getText().toString().trim();
-                String passregUser = passwordreg.getText().toString().trim();
+                String emailregUser, passregUser;
+                emailregUser = String.valueOf(emailreg.getText());
+                passregUser = String.valueOf(passwordreg.getText());
 
-                if (emailregUser.isEmpty() && passregUser.isEmpty()){
-                    Toast.makeText( LoginRegisterActivity.this, "Complete los datos", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    registerUser(emailregUser, passregUser);
+                if (TextUtils.isEmpty(emailregUser)) {
+                    Toast.makeText(LoginRegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(passregUser)) {
+                    Toast.makeText(LoginRegisterActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
+                mAuth.createUserWithEmailAndPassword(emailregUser, passregUser)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    showSuccessDialog();
+                                    emailreg.setText("");
+                                    passwordreg.setText("");
+                                } else {
+                                    Toast.makeText(LoginRegisterActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
+
         });
+
     }
 
     private void loginUser(String emaillogUser, String passlogUser) {
         mAuth.signInWithEmailAndPassword(emaillogUser, passlogUser).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     finish();
                     startActivity(new Intent(LoginRegisterActivity.this, MainActivity.class));
                     Toast.makeText(LoginRegisterActivity.this, "Bienvenido", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(LoginRegisterActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -106,39 +128,19 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
 
-    private void registerUser(String emailregUser, String passregUser){
-        mAuth.createUserWithEmailAndPassword(emailregUser, passregUser).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    private void showSuccessDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginRegisterActivity.this);
+        builder.setTitle("Registro Exitoso");
+        builder.setMessage("El usuario se ha creado correctamente.");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                String id = mAuth.getCurrentUser().getUid();
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", id);
-                map.put("email", emailregUser);
-                map.put("password", passregUser);
-
-
-                mFirestore.collection("user").document(id).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        finish();
-                        startActivity(new Intent(LoginRegisterActivity.this, MainActivity.class));
-                        Toast.makeText(LoginRegisterActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LoginRegisterActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(LoginRegisterActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Cerrar el diálogo
+                dialogInterface.dismiss();
             }
         });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
-
 }
-

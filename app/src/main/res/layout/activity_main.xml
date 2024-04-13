@@ -21,7 +21,8 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer"
+        android:layout_marginTop="?attr/actionBarSize" /> <!-- Ajusta el margen superior para que se superponga al Toolbar -->
 
     <ImageView
         android:id="@+id/imageView"
