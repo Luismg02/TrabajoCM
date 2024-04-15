@@ -46,6 +46,36 @@ public class SlideshowFragment extends Fragment {
 
     private LinearLayout data_display;
 
+
+    public void onResume(){
+        super.onResume();
+
+        fecha = getView().findViewById(R.id.edit_date);
+        latitude = getView().findViewById(R.id.edit_latitud);
+        longitud = getView().findViewById(R.id.edit_longitud);
+        model = getView().findViewById(R.id.edit_model);
+        make = getView().findViewById(R.id.edit_make);
+        width = getView().findViewById(R.id.edit_width);
+        height = getView().findViewById(R.id.edit_height);
+
+        if (getActivity() instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            String fecha_meta = mainActivity.fecha_meta;
+            String latitud_meta = mainActivity.latitud_meta;
+            String longitud_meta = mainActivity.longitud_meta;
+            String model_meta = mainActivity.model_meta;
+            String make_meta = mainActivity.make_meta;
+            String width_meta = mainActivity.width_meta;
+            String height_meta = mainActivity.height_meta;
+            fecha.setText(fecha_meta);
+            latitude.setText(latitud_meta);
+            longitud.setText(longitud_meta);
+            model.setText(model_meta);
+            make.setText(make_meta);
+            width.setText(width_meta);
+            height.setText(height_meta);
+        }
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SlideshowViewModel slideshowViewModel =
@@ -72,7 +102,14 @@ public class SlideshowFragment extends Fragment {
                     MainActivity mainActivity = (MainActivity) getActivity();
                     Uri myUri = mainActivity.selectedImageUri;
                     if(myUri!=null){
-                        Toast.makeText(mainActivity, "Editados todos los metadatos(fake)", Toast.LENGTH_SHORT).show();
+                        mainActivity.setFechaMeta(fecha.getText().toString());
+                        mainActivity.setLatitudMeta(latitude.getText().toString());
+                        mainActivity.setLongitudMeta(longitud.getText().toString());
+                        mainActivity.setMakeMeta(make.getText().toString());
+                        mainActivity.setModelMeta(model.getText().toString());
+                        mainActivity.setWidthMeta(width.getText().toString());
+                        mainActivity.setHeightMeta(height.getText().toString());
+                        Toast.makeText(mainActivity, "Editados todos los metadatos", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(mainActivity, "Cargue una imagen antes", Toast.LENGTH_SHORT).show();
                     }
@@ -86,7 +123,21 @@ public class SlideshowFragment extends Fragment {
             Uri imageUri = mainActivity.selectedImageUri;
             if(imageUri!=null){
                 imageView.setImageURI(imageUri);
-                displayMetadata(imageUri);
+                String fecha_meta = mainActivity.fecha_meta;
+                String latitud_meta = mainActivity.latitud_meta;
+                String longitud_meta = mainActivity.longitud_meta;
+                String model_meta = mainActivity.model_meta;
+                String make_meta = mainActivity.make_meta;
+                String width_meta = mainActivity.width_meta;
+                String height_meta = mainActivity.height_meta;
+                fecha.setText(fecha_meta);
+                latitude.setText(latitud_meta);
+                longitud.setText(longitud_meta);
+                model.setText(model_meta);
+                make.setText(make_meta);
+                width.setText(width_meta);
+                height.setText(height_meta);
+                //displayMetadata(imageUri);
             }else{
                 imageView.setImageResource(R.drawable.imagen_sin_cargar);
             }

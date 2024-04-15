@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -35,32 +34,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.ImagingException;
 import org.apache.commons.imaging.common.ImageMetadata;
-import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
-import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
-import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
-import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
-import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
-import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
-import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
-import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
-import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
-import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
 
 public class GalleryFragment extends Fragment {
@@ -86,6 +68,37 @@ public class GalleryFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        fecha = getView().findViewById(R.id.text_fecha);
+        latitude = getView().findViewById(R.id.text_latitude);
+        longitud = getView().findViewById(R.id.text_longitug);
+        model = getView().findViewById(R.id.text_model);
+        make = getView().findViewById(R.id.text_make);
+        width = getView().findViewById(R.id.text_width);
+        height = getView().findViewById(R.id.text_height);
+
+        if (getActivity() instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            Uri imageUri = mainActivity.selectedImageUri;
+            String fecha_meta = mainActivity.fecha_meta;
+            String latitud_meta = mainActivity.latitud_meta;
+            String longitud_meta = mainActivity.longitud_meta;
+            String model_meta = mainActivity.model_meta;
+            String make_meta = mainActivity.make_meta;
+            String width_meta = mainActivity.width_meta;
+            String height_meta = mainActivity.height_meta;
+            fecha.setText("Fecha: " + fecha_meta);
+            latitude.setText("Latitud: " + latitud_meta);
+            longitud.setText("Longitud: " + longitud_meta);
+            model.setText("Modelo: " + model_meta);
+            make.setText("Fabricante: " + make_meta);
+            width.setText("Ancho: " + width_meta);
+            height.setText("Altura: " + height_meta);
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -161,11 +174,26 @@ public class GalleryFragment extends Fragment {
         if (getActivity() instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) getActivity();
             Uri imageUri = mainActivity.selectedImageUri;
+            String fecha_meta = mainActivity.fecha_meta;
+            String latitud_meta = mainActivity.latitud_meta;
+            String longitud_meta = mainActivity.longitud_meta;
+            String model_meta = mainActivity.model_meta;
+            String make_meta = mainActivity.make_meta;
+            String width_meta = mainActivity.width_meta;
+            String height_meta = mainActivity.height_meta;
+
             if (imageUri != null) {
                 data_display.setVisibility(View.VISIBLE);
                 imageView.setImageURI(imageUri);
                 metadata_explainer.setText(R.string.mostrando_metadatos);
-                loadAndDisplayMetadata(imageUri);
+                fecha.setText("Fecha: " + fecha_meta);
+                latitude.setText("Latitud: " + latitud_meta);
+                longitud.setText("Longitud: " + longitud_meta);
+                model.setText("Modelo: " + model_meta);
+                make.setText("Fabricante: " + make_meta);
+                width.setText("Ancho: " + width_meta);
+                height.setText("Altura: " + height_meta);
+                //loadAndDisplayMetadata(imageUri);
             } else {
                 data_display.setVisibility(View.GONE);
                 imageView.setImageResource(R.drawable.imagen_sin_cargar);

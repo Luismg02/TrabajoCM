@@ -56,7 +56,18 @@ public class BorradoFragment extends Fragment {
                 if (getActivity() instanceof MainActivity) {
                     MainActivity mainActivity = (MainActivity) getActivity();
                     Uri imageUri = mainActivity.selectedImageUri;
+
                     if(imageUri!=null){
+                        mainActivity.setFechaMeta("");
+                        mainActivity.setLatitudMeta("");
+                        mainActivity.setLongitudMeta("");
+                        mainActivity.setMakeMeta("");
+                        mainActivity.setModelMeta("");
+                        mainActivity.setWidthMeta("");
+                        mainActivity.setHeightMeta("");
+                        Toast.makeText(mainActivity, "Borrados todos los datos", Toast.LENGTH_SHORT).show();
+
+
                         try{
                             // Obtener un ContentResolver para acceder a los datos del proveedor de contenido
                             ContentResolver contentResolver = requireActivity().getContentResolver();
@@ -84,8 +95,6 @@ public class BorradoFragment extends Fragment {
                                 exif.saveAttributes();
                                 parcel_file.close();
                             }
-
-                                Toast.makeText(mainActivity, "Borrados todos los datos", Toast.LENGTH_SHORT).show();
                         }catch (Exception e) {
                             e.printStackTrace();
                         }

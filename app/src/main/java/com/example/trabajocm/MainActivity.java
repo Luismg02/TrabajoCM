@@ -3,6 +3,8 @@ package com.example.trabajocm;
 
 //
 
+import android.content.ContentResolver;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +39,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.trabajocm.databinding.ActivityMainBinding;
 
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     public Uri selectedImageUri;
+    public String fecha_meta;
+    public String latitud_meta;
+    public String longitud_meta;
+    public String model_meta;
+    public String make_meta;
+    public String width_meta;
+    public String height_meta;
+
     public NavController navController;
     public NavHostFragment navHostFragment;
 
@@ -127,17 +147,63 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null && isFabPressed) {
             // Mostrar la imagen seleccionada en el ImageView
            selectedImageUri = data.getData();
+           try {
+                ContentResolver contentResolver = this.getContentResolver();
+                // Leer metadatos de la imagen utilizando metadata-extractor
+                InputStream inputStream = contentResolver.openInputStream(selectedImageUri);
+                List<List<String>> lista = new ArrayList<>();
+                if (inputStream != null) {
+                    List<TiffField> listaAux = new ArrayList<>();
 
-            // Configurar la imagen seleccionada en el ImageView
-            //ImageView imageView = findViewById(R.id.imageView);
+                    final ImageMetadata metadata = Imaging.getMetadata(inputStream, selectedImageUri.getPath());
+                    if (metadata instanceof JpegImageMetadata) {
+                        final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+                        final TiffImageMetadata exifMetadata = jpegMetadata.getExif();
+                        if (null != exifMetadata) {
+                            listaAux = exifMetadata.getAllFields();
+                        }
+                    }
+                    for (org.apache.commons.imaging.formats.tiff.TiffField tag : listaAux) {
+                        ArrayList<String> item = new ArrayList<>();
+                        item.add(tag.getTagName());
+                        item.add(tag.getValueDescription());
+                        lista.add(item);
+                    }
+                    inputStream.close();
+                }
 
-            // Crear un Bundle para pasar la URI de la imagen al fragmento
-            //Bundle args = new Bundle();
-            //args.putString("imageUri", selectedImageUri.toString());
+                for (List<String> tag : lista) {
+                    switch (tag.get(0).toString()) {
+                        case "DateTime":
+                            fecha_meta = tag.get(1).toString();
+                            break;
+                        case "GPSLatitude":
+                            latitud_meta = tag.get(1).toString();
+                            break;
+                        case "GPSLongitude":
+                            longitud_meta = tag.get(1).toString();
+                            break;
+                        case "Model":
+                            model_meta = tag.get(1).toString();
+                            break;
+                        case "Make":
+                            make_meta = tag.get(1).toString();
+                            break;
+                        case "ImageWidth":
+                            width_meta = tag.get(1).toString();
+                            break;
+                        case "ImageLength":
+                            height_meta = tag.get(1).toString();
+                            break;
+                        default:
+                            break;
+                    }
 
-            // Obtener el NavController
-            //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+                }
 
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
             // Navegar al fragmento GalleryFragment solo si el botón flotante fue presionado
             navController.navigate(R.id.nav_gallery, null);
 
@@ -147,5 +213,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
     }
+
+    public void setFechaMeta(String nuevaFecha) {
+        fecha_meta = nuevaFecha;
+    }
+
+    public void setLatitudMeta(String nuevaLatitud) {
+        latitud_meta = nuevaLatitud;
+    }
+    public void setLongitudMeta(String nuevaLongitud) {
+        longitud_meta = nuevaLongitud;
+    }
+    public void setModelMeta(String nuevoModel) {
+        model_meta = nuevoModel;
+    }public void setMakeMeta(String nuevoMake) {
+        make_meta = nuevoMake;
+    }public void setWidthMeta(String nuevaWidth) {
+        width_meta = nuevaWidth;
+    }
+    public void setHeightMeta(String nuevoHeight) {
+        height_meta = nuevoHeight;
+    }
+
+
+
 }
