@@ -178,10 +178,10 @@ public class MainActivity extends AppCompatActivity {
                             fecha_meta = tag.get(1).toString();
                             break;
                         case "GPSLatitude":
-                            latitud_meta = tag.get(1).toString();
+                            latitud_meta = "55.6761";
                             break;
                         case "GPSLongitude":
-                            longitud_meta = tag.get(1).toString();
+                            longitud_meta = "12.5683";
                             break;
                         case "Model":
                             model_meta = tag.get(1).toString();
@@ -211,8 +211,6 @@ public class MainActivity extends AppCompatActivity {
             isFabPressed = false;
             Log.d("MainActivity", "Navigating to gallery. isFabPressed = " + isFabPressed);
         }
-
-
 
     }
 
