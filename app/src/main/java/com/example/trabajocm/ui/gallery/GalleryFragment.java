@@ -98,6 +98,22 @@ public class GalleryFragment extends Fragment {
             width.setText("Ancho: " + width_meta);
             height.setText("Altura: " + height_meta);
         }
+
+        // Mostrar el botón si los valores de latitud y longitud GPS están disponibles
+        String latitud_meta = null;
+        String longitud_meta = null;
+        if (getActivity() instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            latitud_meta = mainActivity.latitud_meta;
+            longitud_meta = mainActivity.longitud_meta;
+        }
+        if (latitud_meta != "" || longitud_meta != "") {
+            // Hacer visible el botón
+            btn.setVisibility(View.VISIBLE);
+        } else {
+            // Ocultar el botón
+            btn.setVisibility(View.GONE);
+        }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -255,15 +271,6 @@ public class GalleryFragment extends Fragment {
 
             if (inputStream != null) {
                 Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
-
-                // Mostrar el botón si los valores de latitud y longitud GPS están disponibles
-                if (checkGPSAvailability(metadata)) {
-                    // Hacer visible el botón
-                    btn.setVisibility(View.VISIBLE);
-                } else {
-                    // Ocultar el botón
-                    btn.setVisibility(View.GONE);
-                }
 
                 inputStream.close();
             }
